@@ -9,7 +9,11 @@
 
 Open browser in http://localhost/image-to-video
 
-# Resources web
+### Resources web
 
 - [whammy](https://github.com/antimatter15/whammy)
 - [article generator](http://techslides.com/convert-images-to-video-with-javascript)
+
+### Image reference (App)
+
+![image](src/assets/img/thumbnail.png)
