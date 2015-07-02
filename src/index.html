@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>canvas</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- Le styles -->
+        <link href="assets/plugins/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="assets/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+        <!-- Scripts -->
+        <script type="text/javascript" src="assets/plugins/whammy/whammy.js"></script>
+<!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.min.js"></script><![endif]-->
+<!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
+        <script type="text/javascript" src="assets/plugins/jquery/dist/jquery.min.js"></script>
+        <script type="text/javascript" src="assets/plugins/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="assets/plugins/jquery-form/jquery.form.js"></script>
+
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/">canvas</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
+        </nav>
+        <div class="container">
+            <style>
+                body {
+                    padding-top: 60px;
+                    padding-bottom: 40px;
+                }
+
+                .btn-success {
+                  background-color: #57a900;
+                  background-image: -moz-linear-gradient(top, #70d900, #57a900);
+                  background-image: -ms-linear-gradient(top, #70d900, #57a900);
+                  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#70d900), to(#57a900));
+                  background-image: -webkit-linear-gradient(top, #70d900, #57a900);
+                  background-image: -o-linear-gradient(top, #70d900, #57a900);
+                  background-image: linear-gradient(top, #70d900, #57a900);
+                  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#70d900', endColorstr='#57a900', GradientType=0);
+                }
+
+                .btn-success:hover,
+                .btn-success:active,
+                .btn-success.active,
+                .btn-success.disabled,
+                .btn-success[disabled] {
+                  background-color: #57a900;
+                }
+
+                .btn-success:active, .btn-success.active {
+                  background-color: #57a900;
+                }
+
+                /*
+                * style addons
+                */
+                ul {list-style:none;}
+                #drag { border: 3px solid black; padding:20px; width: 500px; margin: auto; display: inline-block;}
+                #einput {width:400px;}
+                #output {margin:20px;}
+
+                #filesinput {
+                    visibility: collapse;
+                    width: 0px;
+                }
+                #output img{
+                    border: 2px solid #333;
+                    margin-right: 2px;
+                }
+                #small label {font-size:14px;}
+                #small div {margin:5px 0;}
+                #download {
+                    font-size: 16px;
+                }
+                .jumbotron {
+                    padding-top: 15px;
+                    padding-bottom: 0px;
+                    text-align: center;
+                    font-size: 16px;
+                }
+            </style>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Demo para convertir imagenes a video</h1>
+                    <span id="status">Seleccciona algunas imagenes.</span><br><br>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div id="drag">Cargar Archivo:
+                        <button class="btn btn-default" id="fbutton">Selecciona archivo</button>
+                        <div id="small">
+
+                            <div class="form-group">
+                                <label for="width">Width:</label>
+                                <input class="form-control" id="width" type="number" step="1" value="500">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="height">Height:</label>
+                                <input class="form-control" id="height" type="number" step="1" value="300">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="framerate">Duración de Frames:</label>
+                                <input class="form-control" id="framerate" type="number" step="1" value="10">
+                            </div>
+
+                        </div>
+                        <button class="btn btn-success" id="createvideo">Create Video</button>
+
+                    </div>
+                    <input type="file" id="filesinput" multiple>
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="jumbotron">
+                        <video id="awesome" controls autoplay loop style="width: 450px;height: 270px;"></video>
+
+                        <a style="display:none" id="download" download="video.webm" >Descargar <em>Formato: WebM</em></a>
+
+                        <canvas id="canvas" style="display:none" style="width: 450px;height: 200px;"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <hr>
+            <footer>
+                <p>&copy; 2015 Aplicación de Ejemplo.</p>
+            </footer>
+        </div> <!-- /container -->
+
+    <script>
+    /* Drag'n drop stuff */
+    var drag = document.getElementById("drag");
+    var fbutton = document.getElementById("fbutton");
+    var createvideo = document.getElementById("createvideo");
+    var files = document.getElementById("filesinput");
+
+    var ctx = 0;
+
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    //image to video via Whammy
+    var video = new Whammy.Video(15);
+
+    var filesarr = [];
+
+
+
+    createvideo.addEventListener("click", function() {
+
+        document.getElementById('status').innerHTML = "Convirtiendo...";
+
+        document.getElementById('awesome').src = "";
+        ctx = 0;
+
+        canvas.width = document.getElementById("width").value;
+        canvas.height = document.getElementById("height").value;
+        video = new Whammy.Video(document.getElementById("framerate").value);
+
+        //if we have images loaded
+        if(filesarr.length>0){
+
+            //loop through them and process
+            for(i=0; i<filesarr.length; i++) {
+                var file = filesarr[i];
+                if(file.type.match(/image.*/)){
+                    process(file);
+                } else {
+                    document.getElementById('status').innerHTML = "El archivo no es una imagen.";
+                }
+            }
+
+        } else {
+            document.getElementById('status').innerHTML = "Por favor selecciona algunos archivos.";
+        }
+
+    }, false);
+
+
+
+
+
+    fbutton.addEventListener("click", function() {
+        document.getElementById('filesinput').click();
+    }, false);
+
+    drag.ondragover = function(e) {e.preventDefault()}
+    drag.ondrop = function(e) {
+        e.preventDefault();
+        filesarr = e.dataTransfer.items;
+        document.getElementById('status').innerHTML = "Por favor selecciona las opciones y click en Crear Video.";
+    }
+
+    //process files VIA INPUT
+    files.addEventListener("change", function (e) {
+        filesarr = e.target.files;
+        document.getElementById('status').innerHTML = "Por favor selecciona las opciones y click en Crear Video.";
+    }, false);
+
+
+
+    /* main process function */
+    function process(file) {
+
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            var dataUri = event.target.result;
+            var img = new Image();
+
+            //load image and drop into canvas
+            img.onload = function() {
+
+                //a custom fade in and out slideshow
+                context.globalAlpha = 0.2;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.4;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.6;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.8;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 1;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                //this should be a loop based on some user input
+                video.add(context);
+                video.add(context);
+                video.add(context);
+                video.add(context);
+                video.add(context);
+                video.add(context);
+                video.add(context);
+
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.8;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.6;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+                context.clearRect(0,0,context.canvas.width,context.canvas.height);
+                context.globalAlpha = 0.4;
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                video.add(context);
+
+                ctx++;
+                finalizeVideo();
+
+            };
+            img.src = dataUri;
+        };
+
+        reader.onerror = function(event) {
+            console.error("Archivo no puede ser leido! Error: " + event.target.error.code);
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+
+
+    function finalizeVideo(){
+      //check if its ready
+      if(ctx==filesarr.length){
+
+          var start_time = +new Date;
+          var output = video.compile();
+          var end_time = +new Date;
+          var url = webkitURL.createObjectURL(output);
+
+          document.getElementById('awesome').src = url; //toString converts it to a URL via Object URLs, falling back to DataURL
+          document.getElementById('download').style.display = '';
+          document.getElementById('download').href = url;
+          document.getElementById('status').innerHTML = "Compilando Video en " + (end_time - start_time) + "ms, Tamaño del archivo: " + Math.ceil(output.size / 1024) + "KB";
+
+      }
+
+    }
+
+    </script>           
+    </body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "image-to-video",
+  "version": "0.0.0",
+  "authors": [
+    "Anibal C <detops.tk@gmail.com>"
+  ],
+  "description": "coverter image to video iqual to movie marker",
+  "main": "src",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/assets/plugins",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "whammy": "*",
+    "jquery-form": "~3.46.0"
+  }
+}

@@ -1,0 +1,5 @@
+# No follow IDES
+/nbproject
+
+# libraries js
+/src/assets/plugins
