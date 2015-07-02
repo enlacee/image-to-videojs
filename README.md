@@ -1,6 +1,6 @@
-### Convert image to video
+## Convert image to video
 
-# Install
+### Install
 
 	git clone http://repositorio.git
 	cd repositorio
